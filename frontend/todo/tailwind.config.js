@@ -6,6 +6,12 @@ export default {
   ],
   theme: {
     extend: {},
+    //colours used in project defined under global names
+    colors: {
+      primary: "#2B85FF",
+      secondary: "#EF863E",
+      third: "#FFFFFF",
+    }
   },
   plugins: [],
 }
