@@ -5,13 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
-    //colours used in project defined under global names
-    colors: {
-      primary: "#2B85FF",
-      secondary: "#EF863E",
-      third: "#FFFFFF",
-    }
+    extend: {
+      colors: {
+        primary: "#2B85FF",
+        secondary: "#EF863E",
+        third: "#FFFFFF",
+      },
+    },
   },
   plugins: [],
 }
