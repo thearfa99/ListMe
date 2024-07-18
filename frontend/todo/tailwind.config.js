@@ -10,6 +10,8 @@ export default {
         primary: "#2B85FF",
         secondary: "#EF863E",
         third: "#FFFFFF",
+        deepblue: "#12343b",
+        tan: "#c89666",
       },
     },
   },
