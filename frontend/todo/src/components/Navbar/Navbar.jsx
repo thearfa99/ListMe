@@ -7,7 +7,7 @@ const Navbar = () => {
   const navigate = useNavigate;
 
   const onLogout = () => {
-    navigate("../Login");
+    navigate("./Login");
   };
 
   return (
