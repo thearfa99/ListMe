@@ -31,15 +31,15 @@ app.get("/", (req,res)=>{
 app.post("/create-account", async (req, res) => {
     const { fullName, email, password } = req.body;
 
-    if (!fullName){
+    if (!fullName.trim()){
         return res.status(400).json({ error: true, message: "Full Name is required"});
     }
 
-    if (!email){
+    if (!email.trim()){
         return res.status(400).json({ error: true, message: "Email is required"});
     }
 
-    if (!password){
+    if (!password.trim()){
         return res.status(400).json({ error: true, message: "Password is required"});
     }
 
@@ -71,8 +71,6 @@ app.post("/create-account", async (req, res) => {
         message: "Registration Successful",
     })
 });
-
-
 
 app.listen(8000);
 
