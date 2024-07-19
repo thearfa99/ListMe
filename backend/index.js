@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 mongoose.connect(config.connectionString);
 
 const User = require("./models/user.model");
+const Task = require("./models/task.model");
 
 const express = require("express");
 const cors = require("cors");
@@ -26,8 +27,7 @@ app.get("/", (req,res)=>{
     res.json({ data: "hello" });
 });
 
-//CREATE ACCOUNT
-
+// CREATE ACCOUNT
 app.post("/create-account", async (req, res) => {
     const { fullName, email, password } = req.body;
 
@@ -72,6 +72,8 @@ app.post("/create-account", async (req, res) => {
     })
 });
 
+
+// Login
 app.post("/login", async (req,res) => {
     const { email, password } = req.body;
 
@@ -106,6 +108,39 @@ app.post("/login", async (req,res) => {
         return res.status(400).json({
             error: true,
             message: "Invalid Credintials",
+        });
+    }
+});
+
+
+//Add task
+app.post("/add-task", authenticateToken, async (req, res) => {
+    const { id, text, isComplete } = req.body;
+    const { user } = req.user;
+
+    if (!text.trim()){
+        return res.status(400).json({ error:true, message: "Please add a task "});
+    }
+
+    try {
+        const task = new Task({
+            id,
+            text,
+            isComplete,
+            userId: user._id,
+        });
+
+        await task.save();
+
+        return res.json({
+            error: false,
+            task,
+            message: "Task added successfully",
+        });
+    }   catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
         });
     }
 });
