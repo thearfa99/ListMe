@@ -95,10 +95,6 @@ app.post("/add-task", authenticateToken, async (req, res) => {
 app.post("/update-task/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { isComplete } = req.body;
-<<<<<<< HEAD
-=======
-    const { user } = req.user;
->>>>>>> ea83db4a8bfdae82fa47dee25d555d879b5bb551
 
     try {
         const task = await Task.findOneAndUpdate(
