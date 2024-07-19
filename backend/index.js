@@ -1,19 +1,20 @@
 require("dotenv").config();
+console.log('ACCESS_TOKEN_SECRET:', process.env.ACCESS_TOKEN_SECRET);
 
 const config = require("./config.json");
 const mongoose = require("mongoose");
 
 mongoose.connect(config.connectionString);
 
-const User = require("./models/user.model");
-const Task = require("./models/task.model");
+const User = require("./models/user.model.js");
+const Task = require("./models/task.model.js");
 
 const express = require("express");
 const cors = require("cors");
 const app = express();
 
 const jwt = require("jsonwebtoken");
-const { authenticateToken } = require("./utilities");
+const { authenticateToken } = require("./utilities.js");
 
 app.use(express.json());
 
