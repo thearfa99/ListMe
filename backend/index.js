@@ -23,7 +23,7 @@ app.use(
     })
 );
 
-app.get("/", (req,res)=>{
+app.get("/", (req, res) => {
     res.json({ data: "hello" });
 });
 
@@ -31,28 +31,28 @@ app.get("/", (req,res)=>{
 app.post("/create-account", async (req, res) => {
     const { fullName, email, password } = req.body;
 
-    if (!fullName.trim()){
-        return res.status(400).json({ error: true, message: "Full Name is required"});
+    if (!fullName.trim()) {
+        return res.status(400).json({ error: true, message: "Full Name is required" });
     }
 
-    if (!email.trim()){
-        return res.status(400).json({ error: true, message: "Email is required"});
+    if (!email.trim()) {
+        return res.status(400).json({ error: true, message: "Email is required" });
     }
 
-    if (!password.trim()){
-        return res.status(400).json({ error: true, message: "Password is required"});
+    if (!password.trim()) {
+        return res.status(400).json({ error: true, message: "Password is required" });
     }
 
-    const isUser = await User.findOne({ email: email});
+    const isUser = await User.findOne({ email: email });
 
-    if (isUser){
+    if (isUser) {
         return res.json({
             error: true,
             message: "User already exist",
-        })
+        });
     }
 
-    const user = new User ({
+    const user = new User({
         fullName,
         email,
         password,
@@ -60,8 +60,8 @@ app.post("/create-account", async (req, res) => {
 
     await user.save();
 
-    const accessToken = jwt.sign({user},process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "3600m",
+    const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "36000m",
     });
 
     return res.json({
@@ -69,27 +69,25 @@ app.post("/create-account", async (req, res) => {
         user,
         accessToken,
         message: "Registration Successful",
-    })
+    });
 });
 
-
 // Login
-app.post("/login", async (req,res) => {
+app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email){
+    if (!email) {
         return res.status(400).json({ message: "Email is required" });
     }
 
-    if (!password){
+    if (!password) {
         return res.status(400).json({ message: "Password is required" });
     }
 
     const userInfo = await User.findOne({ email: email });
 
-    if (!userInfo){
-        return res.status(400).json({message: "User not found "});
-
+    if (!userInfo) {
+        return res.status(400).json({ message: "User not found " });
     }
 
     if (userInfo.email == email && userInfo.password == password) {
@@ -99,7 +97,7 @@ app.post("/login", async (req,res) => {
         });
 
         return res.json({
-            error:false,
+            error: false,
             message: "Login Successful",
             email,
             accessToken,
@@ -107,19 +105,18 @@ app.post("/login", async (req,res) => {
     } else {
         return res.status(400).json({
             error: true,
-            message: "Invalid Credintials",
+            message: "Invalid Credentials",
         });
     }
 });
 
-
-//Add task
+// Add task
 app.post("/add-task", authenticateToken, async (req, res) => {
     const { id, text, isComplete } = req.body;
     const { user } = req.user;
 
-    if (!text.trim()){
-        return res.status(400).json({ error:true, message: "Please add a task "});
+    if (!text.trim()) {
+        return res.status(400).json({ error: true, message: "Please add a task " });
     }
 
     try {
@@ -137,7 +134,7 @@ app.post("/add-task", authenticateToken, async (req, res) => {
             task,
             message: "Task added successfully",
         });
-    }   catch (error) {
+    } catch (error) {
         return res.status(500).json({
             error: true,
             message: "Internal Server Error",
@@ -145,6 +142,8 @@ app.post("/add-task", authenticateToken, async (req, res) => {
     }
 });
 
-app.listen(8000);
+app.listen(8000, () => {
+    console.log('Server started on port 8000');
+});
 
 module.exports = app;
