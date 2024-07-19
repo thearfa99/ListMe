@@ -1,135 +1,84 @@
 require("dotenv").config();
-console.log('ACCESS_TOKEN_SECRET:', process.env.ACCESS_TOKEN_SECRET);
-
-const config = require("./config.json");
 const mongoose = require("mongoose");
+const express = require("express");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
+const { authenticateToken } = require("./utilities.js");
+const User = require("./models/user.model.js");
+const Task = require("./models/task.model.js");
+const config = require("./config.json");
+
+const app = express();
 
 mongoose.connect(config.connectionString);
 
-const User = require("./models/user.model.js");
-const Task = require("./models/task.model.js");
-
-const express = require("express");
-const cors = require("cors");
-const app = express();
-
-const jwt = require("jsonwebtoken");
-const { authenticateToken } = require("./utilities.js");
-
 app.use(express.json());
-
-app.use(
-    cors({
-        origin: "*",
-    })
-);
+app.use(cors({ origin: "*" }));
 
 app.get("/", (req, res) => {
     res.json({ data: "hello" });
 });
 
-// CREATE ACCOUNT
 app.post("/create-account", async (req, res) => {
     const { fullName, email, password } = req.body;
 
-    if (!fullName.trim()) {
-        return res.status(400).json({ error: true, message: "Full Name is required" });
+    if (!fullName.trim() || !email.trim() || !password.trim()) {
+        return res.status(400).json({ error: true, message: "All fields are required" });
     }
 
-    if (!email.trim()) {
-        return res.status(400).json({ error: true, message: "Email is required" });
-    }
-
-    if (!password.trim()) {
-        return res.status(400).json({ error: true, message: "Password is required" });
-    }
-
-    const isUser = await User.findOne({ email: email });
-
+    const isUser = await User.findOne({ email });
     if (isUser) {
-        return res.json({
-            error: true,
-            message: "User already exist",
-        });
+        return res.status(400).json({ error: true, message: "User already exists" });
     }
 
-    const user = new User({
-        fullName,
-        email,
-        password,
-    });
-
+    const user = new User({ fullName, email, password });
     await user.save();
 
-    const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "36000m",
-    });
+    const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
 
-    return res.json({
-        error: false,
-        user,
-        accessToken,
-        message: "Registration Successful",
-    });
+    return res.json({ error: false, user, accessToken, message: "Registration Successful" });
 });
 
-// Login
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email) {
-        return res.status(400).json({ message: "Email is required" });
+    if (!email || !password) {
+        return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (!password) {
-        return res.status(400).json({ message: "Password is required" });
-    }
-
-    const userInfo = await User.findOne({ email: email });
-
+    const userInfo = await User.findOne({ email });
     if (!userInfo) {
-        return res.status(400).json({ message: "User not found " });
+        return res.status(400).json({ message: "User not found" });
     }
 
-    if (userInfo.email == email && userInfo.password == password) {
-        const user = { user: userInfo };
-        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: "36000m",
-        });
-
-        return res.json({
-            error: false,
-            message: "Login Successful",
-            email,
-            accessToken,
-        });
-    } else {
-        return res.status(400).json({
-            error: true,
-            message: "Invalid Credentials",
-        });
+    const isPasswordMatch = await bcrypt.compare(password, userInfo.password);
+    if (!isPasswordMatch) {
+        return res.status(400).json({ message: "Invalid Credentials" });
     }
+
+    const user = { user: userInfo };
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
+
+    return res.json({ error: false, message: "Login Successful", email, accessToken });
 });
 
-// Add task
 app.post("/add-task", authenticateToken, async (req, res) => {
-    const { id, text, isComplete } = req.body;
+    const { text, isComplete } = req.body;
     const { user } = req.user;
 
     if (!text.trim()) {
-        return res.status(400).json({ error: true, message: "Please add a task " });
+        return res.status(400).json({ error: true, message: "Please add a task" });
     }
 
     try {
         const task = new Task({
-            id,
             text,
-            isComplete,
+            isComplete: isComplete ?? false,
             userId: user._id,
         });
-
         await task.save();
-
         return res.json({
             error: false,
             task,
@@ -139,6 +88,37 @@ app.post("/add-task", authenticateToken, async (req, res) => {
         return res.status(500).json({
             error: true,
             message: "Internal Server Error",
+        });
+    }
+});
+
+app.post("/update-task/:id", authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    const { isComplete } = req.body;
+
+    try {
+        const task = await Task.findOneAndUpdate(
+            { _id: id },
+            { isComplete: isComplete },
+            { new: true},
+        );
+
+        if (!task) {
+            return res.status(404).json({
+                error: true,
+                message: "Task not found or unauthorized",
+            });
+        }
+
+        return res.json({
+            error: false,
+            task,
+            message: "Task updated successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: error,
         });
     }
 });
