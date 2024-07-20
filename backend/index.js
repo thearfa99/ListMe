@@ -12,6 +12,10 @@ const config = require("./config.json");
 
 const app = express();
 
+app.listen(8000, () => {
+    console.log('Server started on port 8000');
+});
+
 mongoose.connect(config.connectionString);
 
 app.use(express.json());
@@ -123,8 +127,30 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
     }
 });
 
-app.listen(8000, () => {
-    console.log('Server started on port 8000');
+app.delete("/delete-task/:id", authenticateToken, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const task = await Task.findOneAndDelete({ _id: id, userId: req.user.user._id });
+
+        if (!task) {
+            return res.status(404).json({
+                error: true,
+                message: "Task not found or unauthorized",
+            });
+        }
+
+        return res.json({
+            error: false,
+            message: "Task deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error deleting task:", error);
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
+        });
+    }
 });
 
 module.exports = app;
