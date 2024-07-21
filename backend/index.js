@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
     res.json({ data: "hello" });
 });
 
+// Create Account API
 app.post("/create-account", async (req, res) => {
     const { fullName, email, password } = req.body;
 
@@ -45,6 +46,7 @@ app.post("/create-account", async (req, res) => {
     return res.json({ error: false, user, accessToken, message: "Registration Successful" });
 });
 
+// Login API
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -68,6 +70,23 @@ app.post("/login", async (req, res) => {
     return res.json({ error: false, message: "Login Successful", email, accessToken });
 });
 
+// Get User API
+app.get("/get-user", authenticateToken, async (req,res) => {
+    const { user } = req.user;
+
+    const isUser = await User.findOne({ _id: user._id });
+
+    if (!isUser) {
+        return res.sendStatus(401);
+    }
+
+    return res.json({
+        user: {fullName: isUser.fullName, email: isUser.email, "_id": isUser._id, createdOn: isUser.createdOn },
+        message: "",
+    });
+});
+
+// Add Task API
 app.post("/add-task", authenticateToken, async (req, res) => {
     const { text, isComplete } = req.body;
     const { user } = req.user;
@@ -96,6 +115,7 @@ app.post("/add-task", authenticateToken, async (req, res) => {
     }
 });
 
+// Update Task API
 app.post("/update-task/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { isComplete } = req.body;
@@ -127,6 +147,7 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
     }
 });
 
+// Delete Task API
 app.delete("/delete-task/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
 
