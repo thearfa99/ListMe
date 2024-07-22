@@ -10,7 +10,7 @@ const Todo = () => {
 
   const fetchTodos = async () => {
     try {
-      const response = await axiosInstance.get('/tasks'); // Update the endpoint based on your backend
+      const response = await axiosInstance.get('/tasks'); 
       setTodoList(response.data.tasks);
     } catch (error) {
       console.error('Error fetching tasks:', error);

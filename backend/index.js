@@ -39,7 +39,7 @@ app.post("/create-account", async (req, res) => {
     }
 
     const user = new User({ fullName, email, password });
-    await user.save();
+    await user.save(); // Handle error
 
     const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
 

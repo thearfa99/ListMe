@@ -1,6 +1,5 @@
 import React from 'react'
 import ProfileInfo from '../Cards/ProfileInfo'
-import { useNavigate } from "react-router-dom"
 
 const Navbar = ( { userInfo } ) => {
   return (
