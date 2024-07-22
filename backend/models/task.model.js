@@ -4,10 +4,10 @@ const { v4: uuidv4 } = require('uuid');
 const Schema = mongoose.Schema;
 
 const todoItem = new Schema({
-    id: { type: String, default: uuidv4 },  // Use UUID for unique task identification
+    id: { type: String, default: uuidv4 },  // UUID for unique task identification
     text: { type: String, required: true },
     isComplete: { type: Boolean, default: false },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },  // Reference to User model
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 module.exports = mongoose.model("Task", todoItem);
