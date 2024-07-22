@@ -1,6 +1,6 @@
 // Todo.jsx
 import React, { useEffect, useRef, useState } from 'react';
-import todo_icon from '../../assets/todo_icon.png';
+import todo_icon from '/todo_icon.png';
 import Todoitems from './Todoitems';
 import axiosInstance from '../../utils/axiosInstance';
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Corrected import
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import Todo from '../../components/Todo/Todo';
 import axiosInstance from '../../../src/utils/axiosInstance';
