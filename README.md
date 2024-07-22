@@ -1,1 +1,93 @@
-# To-Do List App with Login using MERN stack
+# To-Do List App
+
+This is a full-stack To-Do List application built with React, Node.js, Express, and MongoDB. The app allows users to create an account, log in, and manage their to-do tasks. Each task can be added, marked as complete, and deleted.
+
+## Features
+
+- User Authentication: Create an account and log in securely.
+- Task Management: Add, update, mark as complete, and delete tasks.
+- Persistent Storage: Tasks are stored in a MongoDB database.
+- JWT Authentication: Secure API endpoints with JSON Web Tokens.
+
+## Technologies Used
+
+- **Frontend**: React, Axios
+- **Backend**: Node.js, Express, MongoDB, Mongoose, bcrypt, jsonwebtoken
+- **Styling**: Tailwind CSS
+
+## Prerequisites
+
+- Node.js and npm installed
+- MongoDB installed and running
+- A MongoDB connection string
+
+## Getting Started
+
+### 1. Clone the Repository
+'''
+git clone https://github.com/yourusername/todo-list-app.git
+cd todo-list-app
+'''
+2. Backend Setup
+Navigate to the backend directory:
+
+sh
+Copy code
+cd backend
+Install the dependencies:
+
+sh
+Copy code
+npm install
+Create a .env file in the backend directory and add your MongoDB connection string and JWT secret:
+
+sh
+Copy code
+touch .env
+Add the following lines to the .env file:
+
+makefile
+Copy code
+ACCESS_TOKEN_SECRET=your_secret_key
+Create a config.json file in the backend directory and add your MongoDB connection string:
+
+json
+Copy code
+{
+  "connectionString": "your_mongo_connection_string"
+}
+Start the backend server:
+
+sh
+Copy code
+npm start
+3. Frontend Setup
+Navigate to the frontend directory:
+
+sh
+Copy code
+cd frontend
+Install the dependencies:
+
+sh
+Copy code
+npm install
+Start the frontend development server:
+
+sh
+Copy code
+npm start
+4. Usage
+Open your browser and navigate to http://localhost:3000 to see the frontend.
+Use Postman or any other API client to test the backend API endpoints.
+API Endpoints
+User Authentication
+POST /create-account: Create a new user account.
+POST /login: Log in with an existing account.
+GET /get-user: Get the current user's information (requires authentication).
+Task Management
+POST /add-task: Add a new task (requires authentication).
+POST /update-task/
+: Update an existing task (requires authentication).
+DELETE /delete-task/
+: Delete a task (requires authentication).
