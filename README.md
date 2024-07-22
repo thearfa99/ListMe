@@ -24,70 +24,63 @@ This is a full-stack To-Do List application built with React, Node.js, Express, 
 ## Getting Started
 
 ### 1. Clone the Repository
-'''
+```
 git clone https://github.com/yourusername/todo-list-app.git
 cd todo-list-app
-'''
-2. Backend Setup
+```
+### 2. Backend Setup
+
 Navigate to the backend directory:
-
-sh
-Copy code
+```
 cd backend
+```
 Install the dependencies:
-
-sh
-Copy code
+```
 npm install
-Create a .env file in the backend directory and add your MongoDB connection string and JWT secret:
-
-sh
-Copy code
+```
+Create a .env file in the backend directory and add your JWT secret:
+```
 touch .env
+```
 Add the following lines to the .env file:
-
-makefile
-Copy code
+```
 ACCESS_TOKEN_SECRET=your_secret_key
+```
 Create a config.json file in the backend directory and add your MongoDB connection string:
-
-json
-Copy code
+```
 {
   "connectionString": "your_mongo_connection_string"
 }
+```
 Start the backend server:
-
-sh
-Copy code
+```
 npm start
-3. Frontend Setup
+```
+### 3. Frontend Setup
 Navigate to the frontend directory:
-
-sh
-Copy code
+```
 cd frontend
+cd todo
+```
 Install the dependencies:
-
-sh
-Copy code
+```
 npm install
+```
 Start the frontend development server:
-
-sh
-Copy code
-npm start
-4. Usage
-Open your browser and navigate to http://localhost:3000 to see the frontend.
+```
+npm run dev
+```
+### 4. Usage
+Open your browser and navigate to http://localhost:5173/ to see the frontend.
 Use Postman or any other API client to test the backend API endpoints.
-API Endpoints
+
+#### API Endpoints
 User Authentication
 POST /create-account: Create a new user account.
 POST /login: Log in with an existing account.
 GET /get-user: Get the current user's information (requires authentication).
 Task Management
+GET /tasks: Gets all the tasks associated with the logged in user (requires authentication).
 POST /add-task: Add a new task (requires authentication).
-POST /update-task/
-: Update an existing task (requires authentication).
-DELETE /delete-task/
-: Delete a task (requires authentication).
+POST /update-task/:id : Update an existing task (requires authentication).
+DELETE /delete-task/:id : Delete a task (requires authentication).
