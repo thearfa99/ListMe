@@ -81,7 +81,7 @@ User Authentication:
 - POST /login: Log in with an existing account.
 - GET /get-user: Get the current user's information (requires authentication).
 
-Task Management
+Task Management:
 - GET /tasks: Gets all the tasks associated with the logged in user (requires authentication).
 - POST /add-task: Add a new task (requires authentication).
 - POST /update-task/:id : Update an existing task (requires authentication).
