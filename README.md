@@ -76,12 +76,13 @@ Open your browser and navigate to http://localhost:5173/ to see the frontend.
 Use Postman or any other API client to test the backend API endpoints.
 
 #### API Endpoints
-User Authentication
-POST /create-account: Create a new user account.
-POST /login: Log in with an existing account.
-GET /get-user: Get the current user's information (requires authentication).
+User Authentication:
+- POST /create-account: Create a new user account.
+- POST /login: Log in with an existing account.
+- GET /get-user: Get the current user's information (requires authentication).
+
 Task Management
-GET /tasks: Gets all the tasks associated with the logged in user (requires authentication).
-POST /add-task: Add a new task (requires authentication).
-POST /update-task/:id : Update an existing task (requires authentication).
-DELETE /delete-task/:id : Delete a task (requires authentication).
+- GET /tasks: Gets all the tasks associated with the logged in user (requires authentication).
+- POST /add-task: Add a new task (requires authentication).
+- POST /update-task/:id : Update an existing task (requires authentication).
+- DELETE /delete-task/:id : Delete a task (requires authentication).
