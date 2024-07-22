@@ -12,6 +12,10 @@ const config = require("./config.json");
 
 const app = express();
 
+app.listen(8000, () => {
+    console.log('Server started on port 8000');
+});
+
 mongoose.connect(config.connectionString);
 
 app.use(express.json());
@@ -21,6 +25,7 @@ app.get("/", (req, res) => {
     res.json({ data: "hello" });
 });
 
+// Create Account API
 app.post("/create-account", async (req, res) => {
     const { fullName, email, password } = req.body;
 
@@ -41,6 +46,7 @@ app.post("/create-account", async (req, res) => {
     return res.json({ error: false, user, accessToken, message: "Registration Successful" });
 });
 
+// Login API
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -64,6 +70,23 @@ app.post("/login", async (req, res) => {
     return res.json({ error: false, message: "Login Successful", email, accessToken });
 });
 
+// Get User API
+app.get("/get-user", authenticateToken, async (req,res) => {
+    const { user } = req.user;
+
+    const isUser = await User.findOne({ _id: user._id });
+
+    if (!isUser) {
+        return res.sendStatus(401);
+    }
+
+    return res.json({
+        user: {fullName: isUser.fullName, email: isUser.email, "_id": isUser._id, createdOn: isUser.createdOn },
+        message: "",
+    });
+});
+
+// Add Task API
 app.post("/add-task", authenticateToken, async (req, res) => {
     const { text, isComplete } = req.body;
     const { user } = req.user;
@@ -92,6 +115,7 @@ app.post("/add-task", authenticateToken, async (req, res) => {
     }
 });
 
+// Update Task API
 app.post("/update-task/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { isComplete } = req.body;
@@ -123,8 +147,31 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
     }
 });
 
-app.listen(8000, () => {
-    console.log('Server started on port 8000');
+// Delete Task API
+app.delete("/delete-task/:id", authenticateToken, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const task = await Task.findOneAndDelete({ _id: id, userId: req.user.user._id });
+
+        if (!task) {
+            return res.status(404).json({
+                error: true,
+                message: "Task not found or unauthorized",
+            });
+        }
+
+        return res.json({
+            error: false,
+            message: "Task deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error deleting task:", error);
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
+        });
+    }
 });
 
 module.exports = app;
