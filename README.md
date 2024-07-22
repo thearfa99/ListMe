@@ -25,8 +25,8 @@ This is a full-stack To-Do List application built with React, Node.js, Express, 
 
 ### 1. Clone the Repository
 ```
-git clone https://github.com/yourusername/todo-list-app.git
-cd todo-list-app
+git clone https://github.com/thearfa99/mern.git
+cd mern
 ```
 ### 2. Backend Setup
 
@@ -72,6 +72,7 @@ npm run dev
 ```
 ### 4. Usage
 Open your browser and navigate to http://localhost:5173/ to see the frontend.
+
 Use Postman or any other API client to test the backend API endpoints.
 
 #### API Endpoints
