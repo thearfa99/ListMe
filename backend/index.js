@@ -86,6 +86,25 @@ app.get("/get-user", authenticateToken, async (req,res) => {
     });
 });
 
+// Get All Tasks
+app.get("/tasks", authenticateToken, async (req, res) => {
+    const { user } = req.user;
+
+    try {
+        const tasks = await Task.find({ userId: user._id });
+        return res.json({
+            error: false,
+            tasks,
+            message: "Tasks fetched successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
+        });
+    }
+})
+
 // Add Task API
 app.post("/add-task", authenticateToken, async (req, res) => {
     const { text, isComplete } = req.body;
