@@ -38,8 +38,9 @@ app.post("/create-account", async (req, res) => {
         return res.status(400).json({ error: true, message: "User already exists" });
     }
 
-    const user = new User({ fullName, email, password });
-    await user.save(); // Handle error
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ fullName, email, password: hashedPassword });
+    await user.save();
 
     const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
 
@@ -71,7 +72,7 @@ app.post("/login", async (req, res) => {
 });
 
 // Get User API
-app.get("/get-user", authenticateToken, async (req,res) => {
+app.get("/get-user", authenticateToken, async (req, res) => {
     const { user } = req.user;
 
     const isUser = await User.findOne({ _id: user._id });
@@ -81,7 +82,7 @@ app.get("/get-user", authenticateToken, async (req,res) => {
     }
 
     return res.json({
-        user: {fullName: isUser.fullName, email: isUser.email, "_id": isUser._id, createdOn: isUser.createdOn },
+        user: { fullName: isUser.fullName, email: isUser.email, "_id": isUser._id, createdOn: isUser.createdOn },
         message: "",
     });
 });
@@ -119,6 +120,7 @@ app.post("/add-task", authenticateToken, async (req, res) => {
             text,
             isComplete: isComplete ?? false,
             userId: user._id,
+            createdTime: new Date(),  // Set createdTime to now
         });
         await task.save();
         return res.json({
@@ -140,10 +142,17 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
     const { isComplete } = req.body;
 
     try {
+        const update = { isComplete };
+        if (isComplete) {
+            update.completedTime = new Date();  // Set completedTime to now
+        } else {
+            update.completedTime = null;  // Clear completedTime
+        }
+
         const task = await Task.findOneAndUpdate(
-            { _id: id },
-            { isComplete: isComplete },
-            { new: true},
+            { _id: id, userId: req.user.user._id },
+            update,
+            { new: true }
         );
 
         if (!task) {
@@ -161,7 +170,7 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             error: true,
-            message: error,
+            message: "Internal Server Error",
         });
     }
 });
@@ -194,3 +203,4 @@ app.delete("/delete-task/:id", authenticateToken, async (req, res) => {
 });
 
 module.exports = app;
+

@@ -8,6 +8,9 @@ const todoItem = new Schema({
     text: { type: String, required: true },
     isComplete: { type: Boolean, default: false },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    createdTime: { type: Date, default: Date.now },  // Timestamp for task creation
+    completedTime: { type: Date }  // Timestamp for task completion
 });
 
 module.exports = mongoose.model("Task", todoItem);
+

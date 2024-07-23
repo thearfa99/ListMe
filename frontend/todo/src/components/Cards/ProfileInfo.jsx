@@ -6,9 +6,15 @@ const ProfileInfo = ({userInfo}) => {
   const navigate = useNavigate();
 
   const onLogout = () => {
+    const isConfirmed = window.confirm('Are you sure you want to log out?');
+    if (!isConfirmed) {
+      return;
+    }
+  
     localStorage.clear();
     navigate("/login");
   };
+  
 
   return (
     <div className='flex items-center gap-3'>
