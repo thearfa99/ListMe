@@ -1,4 +1,3 @@
-// Todo.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import todo_icon from '/todo_icon.png';
 import Todoitems from './Todoitems';
@@ -69,19 +68,24 @@ const Todo = () => {
       </div>
 
       <div className="w-full">
-        {todoList.map((item) => (
-          <Todoitems
-            key={item._id}
-            text={item.text}
-            id={item._id}
-            isComplete={item.isComplete}
-            deleteTodo={deleteTodo}
-            toggle={() => toggleTask(item._id, !item.isComplete)}
-          />
-        ))}
+        {todoList.length === 0 ? (
+          <p className="text-center text-gray-600">No tasks available. Add a task to get started!</p>
+        ) : (
+          todoList.map((item) => (
+            <Todoitems
+              key={item._id}
+              text={item.text}
+              id={item._id}
+              isComplete={item.isComplete}
+              deleteTodo={deleteTodo}
+              toggle={() => toggleTask(item._id, !item.isComplete)}
+            />
+          ))
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Todo;
+
