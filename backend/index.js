@@ -48,7 +48,7 @@ app.post("/create-account", async (req, res) => {
     }
 
     if (validatePassword(password) === false){
-        return res.status(400).json({ error: true, message: "Password must be atleast 6 characters long and have one or more special characters" });
+        return res.status(400).json({ error: true, message: "" });
     }
 
     const isUser = await User.findOne({ email });
