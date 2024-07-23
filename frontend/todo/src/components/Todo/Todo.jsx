@@ -25,13 +25,18 @@ const Todo = () => {
 
   const addTask = async () => {
     const inputText = inputRef.current.value.trim();
+    const description = prompt("Enter a description for the task (optional):"); // Prompt for description
+
     if (inputText === "") {
       setInputError('Task cannot be empty or whitespace only.');
       return;
     }
 
     try {
-      const response = await axiosInstance.post('/add-task', { text: inputText });
+      const response = await axiosInstance.post('/add-task', {
+        text: inputText,
+        description: description || "", // Send description or empty string
+      });
       setTodoList((prev) => [...prev, response.data.task]);
       inputRef.current.value = "";
       setInputError(''); // Clear error on successful addition
@@ -107,6 +112,7 @@ const Todo = () => {
               toggle={() => toggleTask(item._id, !item.isComplete)}
               createdTime={item.createdTime}
               completedTime={item.completedTime}
+              description={item.description}  // Pass the description
             />
           ))
         )}

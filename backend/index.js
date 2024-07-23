@@ -108,7 +108,7 @@ app.get("/tasks", authenticateToken, async (req, res) => {
 
 // Add Task API
 app.post("/add-task", authenticateToken, async (req, res) => {
-    const { text, isComplete } = req.body;
+    const { text, isComplete, description } = req.body;
     const { user } = req.user;
 
     if (!text.trim()) {
@@ -121,6 +121,7 @@ app.post("/add-task", authenticateToken, async (req, res) => {
             isComplete: isComplete ?? false,
             userId: user._id,
             createdTime: new Date(),  // Set createdTime to now
+            description
         });
         await task.save();
         return res.json({
@@ -136,13 +137,15 @@ app.post("/add-task", authenticateToken, async (req, res) => {
     }
 });
 
+
 // Update Task API
 app.post("/update-task/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
-    const { isComplete } = req.body;
+    const { isComplete, description } = req.body;
 
     try {
-        const update = { isComplete };
+        const update = { isComplete, description };
+
         if (isComplete) {
             update.completedTime = new Date();  // Set completedTime to now
         } else {
@@ -150,7 +153,7 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
         }
 
         const task = await Task.findOneAndUpdate(
-            { _id: id, userId: req.user.user._id },
+            { _id: id },
             update,
             { new: true }
         );
@@ -174,6 +177,8 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
         });
     }
 });
+
+
 
 // Delete Task API
 app.delete("/delete-task/:id", authenticateToken, async (req, res) => {

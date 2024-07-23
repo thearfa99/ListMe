@@ -1,24 +1,29 @@
 import React from 'react';
 
-const Todoitems = ({ text, id, isComplete, deleteTodo, toggle, createdTime, completedTime }) => {
+const Todoitems = ({ text, id, isComplete, deleteTodo, toggle, createdTime, completedTime, description }) => {
   return (
-    <div className="flex flex-col bg-white p-4 rounded-lg shadow-md mb-4">
+    <div className="flex flex-col bg-white p-3 rounded-lg shadow-sm mb-3 border border-gray-200">
       <div className="flex items-center justify-between">
-        <span className={`text-lg ${isComplete ? 'text-green-600 opacity-45' : ''}`}>{text}</span>
+        <span className={`flex-1 text-base ${isComplete ? 'text-green-500 opacity-50' : ''}`}>{text}</span>
         <button
           onClick={() => deleteTodo(id)}
-          className="bg-red-400 text-black px-4 py-2 rounded hover:bg-red-600"
+          className="border border-red-500 rounded px-3 py-1 text-red-500 hover:bg-red-100 text-sm"
         >
           Delete
         </button>
       </div>
-      <div className="flex justify-between text-sm text-gray-600 mt-2">
-        <span>Created: {new Date(createdTime).toLocaleDateString()}</span>
-        {completedTime && <span>Completed: {new Date(completedTime).toLocaleDateString()}</span>}
+      <div className="mt-1 text-xs text-gray-600">
+        {description && <p>Description: {description}</p>}
+        <div className="flex justify-between mt-1">
+          <span>Created: {new Date(createdTime).toLocaleDateString()}</span>
+          {completedTime && (
+            <span className="text-right">Completed: {new Date(completedTime).toLocaleDateString()}</span>
+          )}
+        </div>
       </div>
       <button
         onClick={toggle}
-        className={`mt-2 ${isComplete ? 'bg-green-400 hover:bg-green-600 opacity-45' : 'bg-gray-400 hover:bg-green-600'} text-black px-4 py-2 rounded`}
+        className={`mt-2 border rounded px-3 py-1 ${isComplete ? 'bg-green-400 opacity-50 text-black hover:bg-green-600' : 'bg-gray-300 text-black hover:bg-gray-400'} text-sm`}
       >
         {isComplete ? 'Mark Incomplete' : 'Mark Complete'}
       </button>
@@ -27,3 +32,4 @@ const Todoitems = ({ text, id, isComplete, deleteTodo, toggle, createdTime, comp
 };
 
 export default Todoitems;
+
