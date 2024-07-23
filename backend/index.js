@@ -12,6 +12,20 @@ const config = require("./config.json");
 
 const app = express();
 
+const validatePassword = (password) => {
+    const minLength = 6;
+    const specialCharPattern = /[!@#$%^&*(),.?":{}|<>]/;
+    
+    if (password.length < minLength) {
+      return false;
+    }
+    if (!specialCharPattern.test(password)) {
+      return false;
+    }
+    return true;
+  };
+
+
 app.listen(8000, () => {
     console.log('Server started on port 8000');
 });
@@ -31,6 +45,10 @@ app.post("/create-account", async (req, res) => {
 
     if (!fullName.trim() || !email.trim() || !password.trim()) {
         return res.status(400).json({ error: true, message: "All fields are required" });
+    }
+
+    if (validatePassword(password) === false){
+        return res.status(400).json({ error: true, message: "Password must be atleast 6 characters long and have one or more special characters" });
     }
 
     const isUser = await User.findOne({ email });
