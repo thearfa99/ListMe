@@ -6,6 +6,7 @@ This is a full-stack To-Do List application built with React, Node.js, Express, 
 
 - User Authentication: Create an account and log in securely.
 - Task Management: Add, update, mark as complete, and delete tasks.
+- Automatic Mailing: Once a task is marked complete user recieves a mail.
 - Persistent Storage: Tasks are stored in a MongoDB database.
 - JWT Authentication: Secure API endpoints with JSON Web Tokens.
 
@@ -13,6 +14,7 @@ This is a full-stack To-Do List application built with React, Node.js, Express, 
 
 - **Frontend**: React, Axios
 - **Backend**: Node.js, Express, MongoDB, Mongoose, bcrypt, jsonwebtoken
+- **Mailing Sever**: Postmark
 - **Styling**: Tailwind CSS
 
 ## Prerequisites
@@ -60,7 +62,6 @@ npm start
 Navigate to the frontend directory:
 ```
 cd frontend
-cd todo
 ```
 Install the dependencies:
 ```
