@@ -37,7 +37,7 @@ const Todo = () => {
     const description = prompt("Enter a description for the task (optional):"); // Prompt for description
 
     if (inputText === "") {
-      setInputError('Task cannot be empty or whitespace only.');
+      setInputError('Task cannot be empty.');
       return;
     }
 
