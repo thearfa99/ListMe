@@ -13,9 +13,10 @@ const config = require("./config.json");
 
 const app = express();
 
-// Set up Postmark client
+// Postmark client set up
 const postmarkClient = new postmark.ServerClient(process.env.POSTMARK_API_TOKEN);
 
+//To ensure password lenght of 6 char and 1 special char
 const validatePassword = (password) => {
     const minLength = 6;
     const specialCharPattern = /[!@#$%^&*(),.?":{}|<>]/;
