@@ -51,7 +51,7 @@ app.post("/create-account", async (req, res) => {
     }
 
     if (validatePassword(password) === false){
-        return res.status(400).json({ error: true, message: "" });
+        return res.status(400).json({ error: true, message: "Password does not meet requirements" });
     }
 
     const isUser = await User.findOne({ email });
@@ -59,11 +59,12 @@ app.post("/create-account", async (req, res) => {
         return res.status(400).json({ error: true, message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ fullName, email, password: hashedPassword });
+    const user = new User({ fullName, email, password });
+    console.log('Plaintext password:', password);
+    
     await user.save();
 
-    const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
+    const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10h" });
 
     return res.json({ error: false, user, accessToken, message: "Registration Successful" });
 });
@@ -81,8 +82,11 @@ app.post("/login", async (req, res) => {
         return res.status(400).json({ message: "User not found" });
     }
 
-    const isPasswordMatch = await bcrypt.compare(password, userInfo.password);
-    if (!isPasswordMatch) {
+    console.log('Provided password:', password);
+    console.log('Stored password:', userInfo.password);
+
+    // Assuming passwords are stored in plaintext, comparison is direct
+    if (password !== userInfo.password) {
         return res.status(400).json({ message: "Invalid Credentials" });
     }
 
