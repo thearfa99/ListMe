@@ -7,6 +7,7 @@ const Todo = () => {
   const [todoList, setTodoList] = useState([]);
   const [inputError, setInputError] = useState('');
   const [generalError, setGeneralError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');  // Add state for success messages
   const inputRef = useRef();
 
   const fetchTodos = async () => {
@@ -14,6 +15,7 @@ const Todo = () => {
       const response = await axiosInstance.get('/tasks');
       setTodoList(response.data.tasks);
       setGeneralError('');
+      setSuccessMessage(''); // Clear success message on fetch
     } catch (error) {
       setGeneralError('Error fetching tasks.');
     }
@@ -22,6 +24,13 @@ const Todo = () => {
   useEffect(() => {
     fetchTodos();
   }, []);
+
+  const showSuccessMessage = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 5000); // Clear message after 5 seconds
+  };
 
   const addTask = async () => {
     const inputText = inputRef.current.value.trim();
@@ -41,6 +50,7 @@ const Todo = () => {
       inputRef.current.value = "";
       setInputError(''); // Clear error on successful addition
       setGeneralError('');
+      showSuccessMessage('Task added successfully!'); // Show success message
     } catch (error) {
       setGeneralError('Error adding task.');
     }
@@ -51,11 +61,12 @@ const Todo = () => {
     if (!isConfirmed) {
       return;
     }
-  
+
     try {
       await axiosInstance.delete(`/delete-task/${id}`);
       setTodoList((prevTodos) => prevTodos.filter((todo) => todo._id !== id));
       setGeneralError('');
+      showSuccessMessage('Task deleted successfully!'); // Show success message
     } catch (error) {
       setGeneralError('Error deleting task.');
     }
@@ -68,6 +79,7 @@ const Todo = () => {
         prevTodos.map((todo) => (todo._id === id ? response.data.task : todo))
       );
       setGeneralError('');
+      showSuccessMessage(response.data.message); // Show success message from response
     } catch (error) {
       setGeneralError('Error updating task.');
     }
@@ -97,6 +109,7 @@ const Todo = () => {
 
       {inputError && <p className="text-red-500 text-sm mb-4 text-center">{inputError}</p>}
       {generalError && <p className="text-red-500 text-sm mb-4 text-center">{generalError}</p>}
+      {successMessage && <p className="text-green-500 text-sm mb-4 text-center">{successMessage}</p>} {/* Display success message */}
 
       <div className="w-full">
         {todoList.length === 0 ? (
@@ -122,3 +135,4 @@ const Todo = () => {
 };
 
 export default Todo;
+

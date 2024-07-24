@@ -1,4 +1,5 @@
 require("dotenv").config();
+const postmark = require("postmark");
 const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
@@ -12,6 +13,9 @@ const config = require("./config.json");
 
 const app = express();
 
+// Set up Postmark client
+const postmarkClient = new postmark.ServerClient(process.env.POSTMARK_API_TOKEN);
+
 const validatePassword = (password) => {
     const minLength = 6;
     const specialCharPattern = /[!@#$%^&*(),.?":{}|<>]/;
@@ -24,7 +28,6 @@ const validatePassword = (password) => {
     }
     return true;
   };
-
 
 app.listen(8000, () => {
     console.log('Server started on port 8000');
@@ -155,14 +158,13 @@ app.post("/add-task", authenticateToken, async (req, res) => {
     }
 });
 
-
 // Update Task API
 app.post("/update-task/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { isComplete, description } = req.body;
 
     try {
-        const update = { isComplete, description };
+        let update = { isComplete: isComplete, description: description };
 
         if (isComplete) {
             update.completedTime = new Date();  // Set completedTime to now
@@ -173,7 +175,7 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
         const task = await Task.findOneAndUpdate(
             { _id: id },
             update,
-            { new: true }
+            { new: true },
         );
 
         if (!task) {
@@ -183,20 +185,45 @@ app.post("/update-task/:id", authenticateToken, async (req, res) => {
             });
         }
 
-        return res.json({
-            error: false,
-            task,
-            message: "Task updated successfully",
-        });
+        if (isComplete) {
+            const user = await User.findById(task.userId);
+            const mailOptions = {
+                From: process.env.EMAIL_USER,
+                To: user.email,
+                Subject: 'Task Completed',
+                TextBody: `Your task "${task.text}" has been marked as completed.\n\nCreated: ${new Date(task.createdTime).toLocaleString()}\nCompleted: ${new Date(task.completedTime).toLocaleString()}`
+            };
+
+            postmarkClient.sendEmail(mailOptions, (error, result) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({
+                        error: true,
+                        message: "Error sending email",
+                    });
+                } else {
+                    console.log('Email sent:', result);
+                    return res.json({
+                        error: false,
+                        task,
+                        message: "Task updated and email sent successfully",
+                    });
+                }
+            });
+        } else {
+            return res.json({
+                error: false,
+                task,
+                message: "Task updated successfully",
+            });
+        }
     } catch (error) {
         return res.status(500).json({
             error: true,
-            message: "Internal Server Error",
+            message: error.message || "Internal Server Error",
         });
     }
 });
-
-
 
 // Delete Task API
 app.delete("/delete-task/:id", authenticateToken, async (req, res) => {
