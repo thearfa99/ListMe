@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar/Navbar';
-import Todo from '../../components/Todo/Todo';
+import Navbar from '../../components/navbar/navbar';
+import Todo from '../../components/todo/todo';
 import axiosInstance from '../../utils/axiosinstance';
 
 const Home = () => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import ProfileInfo from '../Cards/ProfileInfo'
+import ProfileInfo from '../cards/profileinfo'
 
 const Navbar = ( { userInfo } ) => {
   return (

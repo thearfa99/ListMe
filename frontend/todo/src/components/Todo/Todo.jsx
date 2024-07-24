@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import todo_icon from '/todo_icon.png';
-import Todoitems from './Todoitems';
+import Todoitems from './todoitems';
 import axiosInstance from '../../utils/axiosinstance';
 
 const Todo = () => {
