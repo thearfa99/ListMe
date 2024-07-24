@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import Todo from '../../components/Todo/Todo';
-import axiosInstance from '../../../src/utils/axiosInstance';
+import axiosInstance from '../../utils/axiosinstance';
 
 const Home = () => {
   const [userInfo, setUserInfo] = useState(null);

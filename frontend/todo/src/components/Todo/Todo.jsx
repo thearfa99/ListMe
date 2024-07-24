@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import todo_icon from '/todo_icon.png';
 import Todoitems from './Todoitems';
-import axiosInstance from '../../utils/axiosInstance';
+import axiosInstance from '../../utils/axiosinstance';
 
 const Todo = () => {
   const [todoList, setTodoList] = useState([]);
