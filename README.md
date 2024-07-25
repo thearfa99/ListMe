@@ -75,6 +75,7 @@ npm run dev
 Open your browser and navigate to http://localhost:5173/ to see the frontend.
 
 Use Postman or any other API client to test the backend API endpoints.
+Also Ensure to setup a postmark sever to ensure automatic mailing
 
 #### API Endpoints
 User Authentication:
