@@ -86,7 +86,6 @@ app.post("/login", async (req, res) => {
     console.log('Provided password:', password);
     console.log('Stored password:', userInfo.password);
 
-    // Assuming passwords are stored in plaintext, comparison is direct
     if (password !== userInfo.password) {
         return res.status(400).json({ message: "Invalid Credentials" });
     }
