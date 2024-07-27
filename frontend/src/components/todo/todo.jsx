@@ -7,7 +7,8 @@ const Todo = () => {
   const [todoList, setTodoList] = useState([]);
   const [inputError, setInputError] = useState('');
   const [generalError, setGeneralError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');  // Add state for success messages
+  const [successMessage, setSuccessMessage] = useState('');
+  const [description, setDescription] = useState('');
   const inputRef = useRef();
 
   const fetchTodos = async () => {
@@ -15,7 +16,7 @@ const Todo = () => {
       const response = await axiosInstance.get('/tasks');
       setTodoList(response.data.tasks);
       setGeneralError('');
-      setSuccessMessage(''); // Clear success message on fetch
+      setSuccessMessage('');
     } catch (error) {
       setGeneralError('Error fetching tasks.');
     }
@@ -29,12 +30,11 @@ const Todo = () => {
     setSuccessMessage(message);
     setTimeout(() => {
       setSuccessMessage('');
-    }, 5000); // Clear message after 5 seconds
+    }, 5000);
   };
 
   const addTask = async () => {
     const inputText = inputRef.current.value.trim();
-    const description = prompt("Enter a description for the task (optional):"); // Prompt for description
 
     if (inputText === "") {
       setInputError('Task cannot be empty.');
@@ -44,13 +44,14 @@ const Todo = () => {
     try {
       const response = await axiosInstance.post('/add-task', {
         text: inputText,
-        description: description || "", // Send description or empty string
+        description: description || "",
       });
       setTodoList((prev) => [...prev, response.data.task]);
       inputRef.current.value = "";
-      setInputError(''); // Clear error on successful addition
+      setDescription("");
+      setInputError('');
       setGeneralError('');
-      showSuccessMessage('Task added successfully!'); // Show success message
+      showSuccessMessage('Task added successfully!');
     } catch (error) {
       setGeneralError('Error adding task.');
     }
@@ -66,7 +67,7 @@ const Todo = () => {
       await axiosInstance.delete(`/delete-task/${id}`);
       setTodoList((prevTodos) => prevTodos.filter((todo) => todo._id !== id));
       setGeneralError('');
-      showSuccessMessage('Task deleted successfully!'); // Show success message
+      showSuccessMessage('Task deleted successfully!');
     } catch (error) {
       setGeneralError('Error deleting task.');
     }
@@ -79,39 +80,46 @@ const Todo = () => {
         prevTodos.map((todo) => (todo._id === id ? response.data.task : todo))
       );
       setGeneralError('');
-      showSuccessMessage(response.data.message); // Show success message from response
+      showSuccessMessage(response.data.message);
     } catch (error) {
       setGeneralError('Error updating task.');
     }
   };
 
   return (
-    <div className="bg-gray-200 bg-opacity-50 w-11/12 max-w-2xl p-7 min-h-[650px] rounded-xl mx-auto mt-12 flex flex-col overflow-y-auto">
-      <div className="flex items-center gap-2 mt-2 mb-0">
+    <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl mx-auto mt-12">
+      <div className="flex items-center gap-2 mb-4">
         <img className="w-8" src={todo_icon} alt="Todo Icon" />
-        <h1 className="text-3xl font-semibold">To-Do List</h1>
+        <h1 className="text-3xl font-bold text-gray-800">To-Do List</h1>
       </div>
 
-      <div className="flex items-center w-full my-7 bg-gray-200 rounded-full">
+      <div className="mb-4">
         <input
           ref={inputRef}
-          className="bg-transparent border-0 outline-none flex-1 h-14 pl-6 pr-2 placeholder:text-slate-600"
+          className="bg-gray-100 border border-gray-300 rounded-lg w-full p-2 mb-2 placeholder-gray-500 focus:outline-none focus:border-blue-500"
           type="text"
           placeholder="Add your task"
         />
+        <input
+          className="bg-gray-100 border border-gray-300 rounded-lg w-full p-2 mb-2 placeholder-gray-500 focus:outline-none focus:border-blue-500"
+          type="text"
+          placeholder="Add a description (optional)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
         <button
           onClick={addTask}
-          className="border-none rounded-full bg-primary w-32 h-14 text-black text-lg font-medium cursor-pointer hover:bg-secondary"
+          className="bg-blue-500 text-white rounded-lg w-full py-2 hover:bg-blue-600 transition-colors"
         >
           ADD+
         </button>
       </div>
 
-      {inputError && <p className="text-red-500 text-sm mb-4 text-center">{inputError}</p>}
-      {generalError && <p className="text-red-500 text-sm mb-4 text-center">{generalError}</p>}
-      {successMessage && <p className="text-green-500 text-sm mb-4 text-center">{successMessage}</p>} {/* Display success message */}
+      {inputError && <p className="text-red-500 text-sm mb-2 text-center">{inputError}</p>}
+      {generalError && <p className="text-red-500 text-sm mb-2 text-center">{generalError}</p>}
+      {successMessage && <p className="text-green-500 text-sm mb-2 text-center">{successMessage}</p>}
 
-      <div className="w-full">
+      <div className="space-y-2">
         {todoList.length === 0 ? (
           <p className="text-center text-gray-600">No tasks available. Add a task to get started!</p>
         ) : (
@@ -125,7 +133,7 @@ const Todo = () => {
               toggle={() => toggleTask(item._id, !item.isComplete)}
               createdTime={item.createdTime}
               completedTime={item.completedTime}
-              description={item.description}  // Pass the description
+              description={item.description}
             />
           ))
         )}
@@ -135,4 +143,3 @@ const Todo = () => {
 };
 
 export default Todo;
-
