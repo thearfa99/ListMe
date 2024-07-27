@@ -14,7 +14,10 @@ const Todo = () => {
   const fetchTodos = async () => {
     try {
       const response = await axiosInstance.get('/tasks');
-      setTodoList(response.data.tasks);
+      const sortedTasks = response.data.tasks.sort(
+        (a, b) => new Date(b.createdTime) - new Date(a.createdTime)
+      );
+      setTodoList(sortedTasks);
       setGeneralError('');
       setSuccessMessage('');
     } catch (error) {
@@ -46,7 +49,11 @@ const Todo = () => {
         text: inputText,
         description: description || "",
       });
-      setTodoList((prev) => [...prev, response.data.task]);
+      const newTask = response.data.task;
+      const updatedList = [newTask, ...todoList].sort(
+        (a, b) => new Date(b.createdTime) - new Date(a.createdTime)
+      );
+      setTodoList(updatedList);
       inputRef.current.value = "";
       setDescription("");
       setInputError('');
@@ -65,7 +72,8 @@ const Todo = () => {
 
     try {
       await axiosInstance.delete(`/delete-task/${id}`);
-      setTodoList((prevTodos) => prevTodos.filter((todo) => todo._id !== id));
+      const updatedList = todoList.filter((todo) => todo._id !== id);
+      setTodoList(updatedList);
       setGeneralError('');
       showSuccessMessage('Task deleted successfully!');
     } catch (error) {
@@ -76,9 +84,10 @@ const Todo = () => {
   const toggleTask = async (id, isComplete) => {
     try {
       const response = await axiosInstance.post(`/update-task/${id}`, { isComplete });
-      setTodoList((prevTodos) =>
-        prevTodos.map((todo) => (todo._id === id ? response.data.task : todo))
-      );
+      const updatedList = todoList.map((todo) =>
+        todo._id === id ? response.data.task : todo
+      ).sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+      setTodoList(updatedList);
       setGeneralError('');
       showSuccessMessage(response.data.message);
     } catch (error) {
@@ -109,7 +118,7 @@ const Todo = () => {
         />
         <button
           onClick={addTask}
-          className="bg-blue-500 text-white rounded-lg w-full py-2 hover:bg-blue-600 transition-colors"
+          className="bg-blue-500 text-black rounded-lg w-full py-2 hover:bg-blue-600 transition-colors"
         >
           ADD+
         </button>
