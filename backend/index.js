@@ -61,7 +61,6 @@ app.post("/create-account", async (req, res) => {
     }
 
     const user = new User({ fullName, email, password });
-    console.log('Plaintext password:', password);
     
     await user.save();
 
@@ -82,9 +81,6 @@ app.post("/login", async (req, res) => {
     if (!userInfo) {
         return res.status(400).json({ message: "User not found" });
     }
-
-    console.log('Provided password:', password);
-    console.log('Stored password:', userInfo.password);
 
     if (password !== userInfo.password) {
         return res.status(400).json({ message: "Invalid Credentials" });
