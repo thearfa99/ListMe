@@ -1,6 +1,6 @@
-# To-Do List App
+# ListME
 
-This is a full-stack To-Do List application built with React, Node.js, Express, and MongoDB. The app allows users to create an account, log in, and manage their to-do tasks. Each task can be added, marked as complete, and deleted.
+ListMe is a full-stack To-Do List application built with React, Node.js, Express, and MongoDB. The app allows users to create an account, log in, and manage their to-do tasks. Each task can be added, marked as complete, and deleted.
 
 ## Features
 
