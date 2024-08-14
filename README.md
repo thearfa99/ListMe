@@ -13,7 +13,7 @@ This is a full-stack To-Do List application built with React, Node.js, Express, 
 ## Technologies Used
 
 - **Frontend**: React, Axios
-- **Backend**: Node.js, Express, MongoDB, Mongoose, bcrypt, jsonwebtoken
+- **Backend**: Node.js, Express, MongoDB Atlas, Mongoose, bcrypt, jsonwebtoken
 - **Mailing Server**: Postmark
 - **Styling**: Tailwind CSS
 
