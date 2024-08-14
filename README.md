@@ -27,7 +27,7 @@ ListMe is a full-stack To-Do List application built with React, Node.js, Express
 
 ### 1. Clone the Repository
 ```
-git clone https://github.com/thearfa99/mern.git
+git clone https://github.com/thearfa99/ListMe.git
 cd mern
 ```
 ### 2. Backend Setup
