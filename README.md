@@ -13,7 +13,7 @@ This is a full-stack To-Do List application built with React, Node.js, Express, 
 ## Technologies Used
 
 - **Frontend**: React, Axios
-- **Backend**: Node.js, Express, MongoDB, Mongoose, bcrypt, jsonwebtoken
+- **Backend**: Node.js, Express, MongoDB Atlas, Mongoose, bcrypt, jsonwebtoken
 - **Mailing Server**: Postmark
 - **Styling**: Tailwind CSS
 
@@ -34,7 +34,7 @@ cd mern
 
 Navigate to the backend directory:
 ```
-cd backend
+cd server
 ```
 Install the dependencies:
 ```
@@ -46,6 +46,8 @@ touch .env
 ```
 Add the following lines to the .env file:
 ```
+EMAIL_USER=your_sender_email
+POSTMARK_API_TOKEN=your_postmark_api
 ACCESS_TOKEN_SECRET=your_secret_key
 ```
 Create a config.json file in the backend directory and add your MongoDB connection string:
@@ -61,7 +63,7 @@ npm start
 ### 3. Frontend Setup
 Navigate to the frontend directory:
 ```
-cd frontend
+cd client
 ```
 Install the dependencies:
 ```
